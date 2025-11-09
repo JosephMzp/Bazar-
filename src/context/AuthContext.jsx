@@ -4,7 +4,7 @@ import {supabase} from "../supabase/supabase.config.jsx"
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({children}) =>{
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState(null);
     useEffect(() =>{
         const {data:authListener} = supabase.auth.onAuthStateChange(
             async(event, session) => {
@@ -17,7 +17,7 @@ export const AuthContextProvider = ({children}) =>{
             }
         )
         return ()=> {
-            authListener.subscription;
+            authListener.subscription.unsubscribe();
         }
     },[])
     return(
