@@ -14,7 +14,7 @@ export function HomeTemplate() {
         <Header stateConfig={{state:state, setState:()=> setState(!state)}}/>
       </header>
       <section className="area1">
-        <Title>Tu empresa</Title>
+        <Title>Libreria Valderrama</Title>
       </section>
       <section className="main">
         <BannerEmpresa/>

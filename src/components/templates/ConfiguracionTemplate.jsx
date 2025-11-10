@@ -9,7 +9,7 @@ export function ConfiguracionTemplate() {
         {DataModulosConfiguracion.map((item, index) => {
           return (
             <Link
-              to={item.state ? item.link : ""}
+              to={item.link}
               className={item.state ? "card" : "card false"}
               key={index}
             >
