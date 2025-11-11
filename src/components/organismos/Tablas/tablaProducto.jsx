@@ -10,20 +10,37 @@ import styled from "styled-components";
 import { AccionesTabla } from "../AccionesTabla";
 import Swal from "sweetalert2";
 import { useProductosStore } from "../../../store/ProductosStore";
-import { v } from "../../../styles/variables"
+import { v } from "../../../styles/variables";
 
-export function TablaProducto({ data }) {
-    const {eliminarProducto} = useProductosStore()
-  const editar = () => {};
+export function TablaProducto({
+  data,
+  setopenRegistro,
+  setdataSelect,
+  setAccion,
+}) {
+  const { eliminarProducto } = useProductosStore();
+  const editar = (data) => {
+    if (data.nombre === "Generica") {
+      Swal.fire({
+        icon: "error",
+        title: "Oops..",
+        text: "Este registro no se permite modificar",
+      });
+      return;
+    }
+    setopenRegistro(true);
+    setdataSelect(data);
+    setAccion("Editar");
+  };
 
   const eliminar = (p) => {
-    if(p.nombre==="Generica"){
-        Swal.fire({
-            icon:"error",
-            title:"oops",
-            text:"No se puede eliminar"
-        })
-        return;
+    if (p.nombre === "Generica") {
+      Swal.fire({
+        icon: "error",
+        title: "oops",
+        text: "No se puede eliminar",
+      });
+      return;
     }
     Swal.fire({
       title: "¿Estas seguro?",
@@ -33,10 +50,9 @@ export function TablaProducto({ data }) {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Si, eliminar",
-    }).then(async(result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        
-        await eliminarProducto({id:p.id})
+        await eliminarProducto(p.id);
       }
     });
   };
@@ -47,15 +63,35 @@ export function TablaProducto({ data }) {
       cell: (info) => <span>{info.getValue()}</span>,
     },
     {
+      accessorKey: "precio_unitario",
+      header: "Precio (S/)",
+      cell: (info) => <span>{info.getValue() ?? "-"}</span>,
+    },
+    {
+      accessorKey: "stock_actual",
+      header: "Stock Actual",
+      cell: (info) => <span>{info.getValue() ?? 0}</span>,
+    },
+    {
+      accessorKey: "stock_minimo",
+      header: "Stock Mínimo",
+      cell: (info) => <span>{info.getValue() ?? 0}</span>,
+    },
+    {
+      header: "Categoría",
+      accessorFn: (row) => row.categoria?.nombre ?? "Sin categoría",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+    {
       accessorKey: "acciones",
-      header: "",
+      header: "Acciones",
       cell: (info) => (
-        <td className="ContentCell">
+        <div className="ContentCell">
           <AccionesTabla
             funcionEditar={() => editar(info.row.original)}
             funcionEliminar={() => eliminar(info.row.original)}
           />
-        </td>
+        </div>
       ),
     },
   ];
@@ -105,7 +141,6 @@ const Container = styled.div`
   }
   @media (min-width: ${v.bphomer}) {
     margin: 2em auto;
-   
   }
   .responsive-table {
     width: 100%;

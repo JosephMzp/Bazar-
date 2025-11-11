@@ -7,14 +7,17 @@ export function Productos() {
   const { listarProductos, productos, buscarProduc, buscador } =
     useProductosStore();
 
-  // 🔹 Cargar todos los productos
+  //  Cargar todos los productos
   const { data,isLoading, error } = useQuery({
     queryKey: ["mostrar productos"],
     queryFn: listarProductos,
   });
 
   // 🔹 Buscar productos (solo si hay texto)
-  useQuery({
+ const {
+    data: resultadosBusqueda,
+    isFetching: buscando,
+  } = useQuery({
     queryKey: ["buscar producto", buscador],
     queryFn: () => buscarProduc({ nombre: buscador }),
     enabled: buscador.length > 0,
@@ -23,5 +26,7 @@ export function Productos() {
   if (isLoading) return <SpinnerLoader />;
   if (error) return <span>Error cargando productos</span>;
 
-  return <ProductosTemplate data={data ?? productos} />;
+  const productosAMostrar = buscador.length > 0 ? resultadosBusqueda : data;
+
+  return <ProductosTemplate data={productos} />;
 }

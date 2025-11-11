@@ -41,6 +41,7 @@ export const useProductosStore = create((set, get) => ({
   },
 
   eliminarProducto: async (id) => {
+    console.log("Eliminando id:", id);
     await EliminarProducto(id);
     set((state) => ({
       productos: state.productos.filter((p) => p.id !== id),

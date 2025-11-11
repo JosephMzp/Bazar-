@@ -4,18 +4,29 @@ import { useAuthStore } from "../../store/AuthStore";
 import { Header } from "../organismos/Header";
 import { useState } from "react";
 import { TablaProducto } from "../organismos/Tablas/tablaProducto";
-import { ResgistrarProducto } from "../organismos/Formularios/RegistrarProducto";
+import { RegistrarProducto } from "../organismos/Formularios/RegistrarProducto";
 import { BtnFiltro } from "../moleculas/BtnFiltro";
+import { ContentFiltro } from "../atomos/ContentFiltro";
+import {Title} from "../atomos/Title"
+import { v } from "../../styles/variables"
+import { Buscador } from "../organismos/Buscador";
+import { useProductosStore } from "../../store/ProductosStore";
 
 export function ProductosTemplate({ data }) {
   const [state, setState] = useState(false);
   const [dataSelect, setdataSelect] = useState([]);
   const [accion, setAccion] = useState("");
   const [openRegistro, setopenRegistro] = useState(false);
+  const nuevoRegistro = () =>{
+    setopenRegistro(!openRegistro);
+    setAccion("Nuevo")
+    setdataSelect([])
+  }
+  const {setBuscador} = useProductosStore();
   return (
     <Container>
       {openRegistro && 
-        <ResgistrarProducto
+        <RegistrarProducto
           dataSelect={dataSelect}
           accion={accion}
           onClose={() => setopenRegistro(!openRegistro)}
@@ -27,11 +38,17 @@ export function ProductosTemplate({ data }) {
           stateConfig={{ state: state, setState: () => setState(!state) }}
         />
       </header>
-      <section className="area1"></section>
-      <BtnFiltro/>
-      <section className="area2"></section>
+      <section className="area1">
+      <ContentFiltro>
+        <Title>Productos</Title>
+      <BtnFiltro funcion={nuevoRegistro} bgcolor="#f6f3f3" textcolor="#353535" icono={<v.agregar/>}/>
+      </ContentFiltro>
+      </section>
+      <section className="area2">
+        <Buscador setBuscador={setBuscador}/>
+      </section>
       <section className="main">
-        <TablaProducto data={data} />
+        <TablaProducto data={data} setopenRegistro={setopenRegistro} setdataSelect={setdataSelect} setAccion={setAccion}/>
       </section>
     </Container>
   );
@@ -51,25 +68,26 @@ const Container = styled.div`
 
   .header {
     grid-area: header;
-    background-color: rgba(103, 93, 241, 0.14);
+
     display: flex;
     align-items: center;
   }
   .area1 {
     grid-area: area1;
-    background-color: rgba(229, 67, 26, 0.14);
+
     display: flex;
     align-items: center;
   }
   .area2. {
     grid-area: area2;
-    background-color: rgba(77, 237, 106, 0.14);
+
     display: flex;
     align-items: center;
+    justify-content: end;
   }
   .main {
     grid-area: main;
-    background-color: rgba(179, 46, 241, 0.14);
+
     display: flex;
     align-items: center;
   }

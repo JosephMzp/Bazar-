@@ -27,18 +27,24 @@ export async function InsertarProducto(p) {
 export const MostrarProductos = async () => {
   const { data, error } = await supabase
     .from("productos")
-    .select(`*`)
+    .select(`
+      id,
+      nombre,
+      precio_unitario,
+      stock_actual,
+      stock_minimo,
+      id_categoria,
+      categoria(nombre)
+    `)
     .order("id", { ascending: false });
 
   if (error) throw error;
-  console.error("Error en MostrarProductos:", error);
-  console.log("Productos desde Supabase:", data);
   return data;
   
 };
 
 // 🔹 Actualizar producto
-export const ActualizarProducto = async (id, p) => {
+export async function ActualizarProducto(id, p) {
   const { data, error } = await supabase
     .from("productos")
     .update({
@@ -57,7 +63,7 @@ export const ActualizarProducto = async (id, p) => {
 
   if (error) throw error;
   return data;
-};
+}
 
 // 🔹 Eliminar producto
 export const EliminarProducto = async (id) => {
@@ -70,7 +76,7 @@ export const EliminarProducto = async (id) => {
 export const ObtenerProducto = async (id) => {
   const { data, error } = await supabase
     .from("productos")
-    .select(`*, categoria(nombre), proveedor(nombre)`)
+    .select("*")
     .eq("id", id)
     .maybeSingle();
 
@@ -82,7 +88,7 @@ export const ObtenerProducto = async (id) => {
 export async function BuscarProducto(p) {
   const { data, error } = await supabase
     .from("productos")
-    .select(`*, categoria(nombre), proveedor(nombre)`)
+    .select("*")
     .ilike("nombre", `%${p.nombre}%`);
 
   if (error) throw error;
