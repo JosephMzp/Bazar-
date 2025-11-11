@@ -5,6 +5,7 @@ import { Header } from "../organismos/Header";
 import { useState } from "react";
 import { TablaProducto } from "../organismos/Tablas/tablaProducto";
 import { ResgistrarProducto } from "../organismos/Formularios/RegistrarProducto";
+import { BtnFiltro } from "../moleculas/BtnFiltro";
 
 export function ProductosTemplate({ data }) {
   const [state, setState] = useState(false);
@@ -27,6 +28,7 @@ export function ProductosTemplate({ data }) {
         />
       </header>
       <section className="area1"></section>
+      <BtnFiltro/>
       <section className="area2"></section>
       <section className="main">
         <TablaProducto data={data} />

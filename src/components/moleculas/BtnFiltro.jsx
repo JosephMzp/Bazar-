@@ -16,5 +16,14 @@ const Container = styled.button`
   border-radius: 50%;
   background: linear-gradient(145deg, #f0f0f0, #cacaca);
   box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
-  color: ${(props)}
+  color: ${(props)=> props.$textcolor};
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  position: relative; 
+  cursor: pointer;
+  .contentIcon{
+  
+  }
 `;
