@@ -9,6 +9,7 @@ import { SpinnerLoader } from "../components/moleculas/SpinnerLoader";
 import { ErrorMolecula } from "../components/moleculas/ErrorMolecula";
 import { MostrarEmpresa } from "../supabase/crudLibreria";
 import { Configuracion } from "../pages/Configuracion";
+import { Productos } from "../pages/Productos";
 
 export function MyRoutes() {
   const { user } = UserAuth();
@@ -23,9 +24,9 @@ export function MyRoutes() {
     queryFn: () => MostrarUsuarios(),
   });
   const { data: dataempresa } = useQuery({
-    queryKey: ["mostrar empresa", idusuario],
-    queryFn: () => MostrarEmpresa({ idusuario: idusuario }),
-    enabled: !!idusuario && idusuario > 0,
+    queryKey: ["mostrar empresa", datausuarios?.idempresa],
+    queryFn: () => MostrarEmpresa({ idempresa: datausuarios?.idempresa }),
+    enabled: !!datausuarios?.idempresa,
   });
   if (isLoading) {
     return <SpinnerLoader />;
@@ -39,6 +40,7 @@ export function MyRoutes() {
       <Route element={<ProtectedRoute user={user} redirectTo="/login" />}>
         <Route path="/" element={<Home />} />
         <Route path="/configurar" element={<Configuracion />} />
+        <Route path="/inventario" element={<Productos />} />
       </Route>
     </Routes>
   );

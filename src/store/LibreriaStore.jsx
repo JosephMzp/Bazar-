@@ -4,8 +4,8 @@ import { MostrarEmpresa } from "../supabase/crudLibreria";
 
 export const useLibreriaStore = create((set, get) => ({
     dataempresa:[],
-  MostrarEmpresa: async () => {
-    const response = await MostrarEmpresa();
+  MostrarEmpresa: async (idusuario) => {
+    const response = await MostrarEmpresa({ idusuario });
     set({ dataempresa: response });
     return response;
   },

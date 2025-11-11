@@ -6,10 +6,11 @@ import { useUsuariosStore } from "../../store/UsuariosStore";
 import { MostrarEmpresa } from "../../supabase/crudLibreria";
 import { supabase } from "../../supabase/supabase.config";
 
+// 🔹 Función para contar usuarios
 async function fetchConteoUsuarios() {
   const { count, error } = await supabase
-    .from('usuarios')
-    .select('*', { count: 'exact', head: true });
+    .from("usuarios")
+    .select("*", { count: "exact", head: true });
   if (error) throw error;
   return count;
 }
@@ -17,17 +18,19 @@ async function fetchConteoUsuarios() {
 export function BannerEmpresa() {
   const { idusuario } = useUsuariosStore();
 
+  // 🔹 Carga de empresa
   const { data: dataempresa, isLoading } = useQuery({
     queryKey: ["mostrar empresa", idusuario],
-    queryFn: () => MostrarEmpresa({ idusuario: idusuario }),
+    queryFn: () => MostrarEmpresa({ idusuario }),
     enabled: !!idusuario && idusuario > 0,
   });
 
+  // 🔹 Carga del conteo de usuarios
   const { data: totalUsuarios, isLoading: isLoadingConteo } = useQuery({
     queryKey: ["conteo_usuarios"],
-    queryFn: fetchConteoUsuarios, // Llama a la nueva función
+    queryFn: fetchConteoUsuarios,
   });
-  
+
   if (isLoading || !dataempresa) {
     return (
       <Container>
@@ -37,6 +40,7 @@ export function BannerEmpresa() {
       </Container>
     );
   }
+
   return (
     <Container>
       <div className="content-wrapper-context">
@@ -47,9 +51,11 @@ export function BannerEmpresa() {
         <div className="content-text">Bazar+ te mantiene siempre</div>
         <ContentCards>
           <CardDatosEmpresa titulo="Moneda" valor={dataempresa.moneda} />
-          <CardDatosEmpresa titulo="Usuarios" valor={totalUsuarios} />
+          <CardDatosEmpresa titulo="Usuarios" valor={totalUsuarios ?? 0} />
         </ContentCards>
       </div>
+
+      {/* SVGs */}
       <div className="contentsvg">
         <svg
           className="opacity-0 group-hover:opacity-100 transform-gpu transition-all will-change-auto duration-600 ease-in-out"

@@ -6,7 +6,7 @@ export const MostrarEmpresa = async (p) => {
   const { error, data } = await supabase
     .from("empresa")
     .select()
-    .eq("iduseradmin", p.idusuario)
+    .eq("id", 8)
     .maybeSingle();
   if (data) {
     return data;

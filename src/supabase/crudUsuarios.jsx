@@ -5,7 +5,10 @@ import Swal from "sweetalert2";
 export const InsertarUsuarios = async (p) => {
   const { data, error } = await supabase
     .from("usuarios")
-    .insert(p)
+    .insert({
+      ...p,
+      idempresa: 8 // 👈 Asigna aquí el ID fijo de la empresa
+    })
     .select()
     .maybeSingle();
   if (error) {
