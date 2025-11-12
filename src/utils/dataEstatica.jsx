@@ -131,3 +131,35 @@ export const TipoDocData = [
     icono: "👑",
   },
 ];
+
+// NUEVOS DATOS FALSOS PARA REPORTES
+export const DataReportes = [
+  {
+    id: "1",
+    title: "Ventas del Mes",
+    description: "Un resumen de las ventas totales y promedio diario.",
+    icon: <v.iconobars />,
+    chartData: [65, 59, 80, 81, 56, 55, 40], // Datos para el gráfico falso
+  },
+  {
+    id: "2",
+    title: "Inventario Bajo",
+    description: "Productos que necesitan reabastecimiento pronto.",
+    icon: <v.iconostockminimo />,
+    chartData: [30, 40, 45, 22, 15, 60, 70],
+  },
+  {
+    id: "3",
+    title: "Productos Populares",
+    description: "Los 5 productos más vendidos de este período.",
+    icon: <v.iconopie />,
+    chartData: [80, 50, 30, 70, 90, 20, 10],
+  },
+   {
+    id: "4",
+    title: "Usuarios Activos",
+    description: "Resumen de la actividad de los usuarios.",
+    icon: <v.iconoUser />,
+    chartData: [10, 40, 35, 50, 49, 60, 70],
+  },
+];

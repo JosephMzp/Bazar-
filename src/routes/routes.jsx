@@ -10,6 +10,7 @@ import { ErrorMolecula } from "../components/moleculas/ErrorMolecula";
 import { MostrarEmpresa } from "../supabase/crudLibreria";
 import { Configuracion } from "../pages/Configuracion";
 import { Productos } from "../pages/Productos";
+import { Reportes } from "../pages/Reportes";
 
 export function MyRoutes() {
   const { user } = UserAuth();
@@ -39,6 +40,7 @@ export function MyRoutes() {
       <Route path="/login" element={<Login />} />
       <Route element={<ProtectedRoute user={user} redirectTo="/login" />}>
         <Route path="/" element={<Home />} />
+        <Route path="/reportes" element={<Reportes />} />
         <Route path="/configurar" element={<Configuracion />} />
         <Route path="/inventario" element={<Productos />} />
       </Route>
