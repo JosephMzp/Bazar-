@@ -107,7 +107,7 @@ export function LoginTemplate() {
 }
 const Container = styled.div`
   background-size: cover;
-  height: 100vh;
+  min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;

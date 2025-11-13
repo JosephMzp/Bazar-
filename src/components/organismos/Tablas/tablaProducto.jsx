@@ -11,6 +11,9 @@ import { AccionesTabla } from "../AccionesTabla";
 import Swal from "sweetalert2";
 import { useProductosStore } from "../../../store/ProductosStore";
 import { v } from "../../../styles/variables";
+import { FaArrowsAltV } from "react-icons/fa";
+import { Paginacion } from "./Paginacion";
+import { useState } from "react";
 
 export function TablaProducto({
   data,
@@ -18,6 +21,7 @@ export function TablaProducto({
   setdataSelect,
   setAccion,
 }) {
+  const [pagina, setPagina] = useState(1);
   const { eliminarProducto } = useProductosStore();
   const editar = (data) => {
     if (data.nombre === "Generica") {
@@ -60,7 +64,8 @@ export function TablaProducto({
     {
       accessorKey: "nombre",
       header: "Nombre",
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => <td data-title="Nombre" className="ContentCell"
+      ><span>{info.getValue()}</span></td>,
     },
     {
       accessorKey: "precio_unitario",
@@ -85,6 +90,7 @@ export function TablaProducto({
     {
       accessorKey: "acciones",
       header: "Acciones",
+      enableSorting: false,
       cell: (info) => (
         <div className="ContentCell">
           <AccionesTabla
@@ -110,7 +116,23 @@ export function TablaProducto({
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>{header.column.columnDef.header}</th>
+                <th key={header.id}>
+                  {header.column.columnDef.header}
+                  {header.column.getCanSort() && (
+                    <span
+                      style={{ cursor: "pointer" }}
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      <FaArrowsAltV />
+                    </span>
+                  )}
+                  {
+                    {
+                      asc: "🔼",
+                      desc: "🔽",
+                    }[header.column.getIsSorted()]
+                  }
+                </th>
               ))}
             </tr>
           ))}
@@ -128,6 +150,13 @@ export function TablaProducto({
           ))}
         </tbody>
       </table>
+      <Paginacion
+        table={table}
+        irinicio={() => table.setPageIndex(0)}
+        pagina={table.getState().pagination.pageIndex + 1}
+        setPagina={setPagina}
+        maximo={table.getPageCount()}
+      />
     </Container>
   );
 }
