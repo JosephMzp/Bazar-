@@ -25,10 +25,14 @@ export const useProductosStore = create((set, get) => ({
   selectProducto: (p) => set({ productoActual: p }),
 
   insertarProducto: async (p) => {
-    const data = await InsertarProducto(p);
-    set((state) => ({ productos: [data, ...state.productos] }));
-    return data;
-  },
+  const data = await InsertarProducto(p);
+
+  // 🚀 Recargar lista completa ya con todas las relaciones
+  const { listarProductos } = get();
+  await listarProductos();
+
+  return data;
+},
 
   actualizarProducto: async (id, p) => {
     const data = await ActualizarProducto(id, p);

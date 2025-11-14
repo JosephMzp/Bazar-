@@ -11,7 +11,7 @@ export async function InsertarProducto(p) {
         precio_unitario: p.precio_unitario,
         stock_actual: p.stock_actual,
         stock_minimo: p.stock_minimo,
-        id_categoria: p.id_categoria,
+        id_subcategoria: p.id_subcategoria,
         id_proveedor: p.id_proveedor,
         estado: p.estado ?? true,
       },
@@ -27,20 +27,27 @@ export async function InsertarProducto(p) {
 export const MostrarProductos = async () => {
   const { data, error } = await supabase
     .from("productos")
-    .select(`
-      id,
-      nombre,
-      precio_unitario,
-      stock_actual,
-      stock_minimo,
-      id_categoria,
-      categoria(nombre)
-    `)
+    .select(
+      `
+  *,
+      sub_categoria (
+        id,
+        nombre,
+        categoria (
+          id,
+          nombre
+        )
+      ),
+      proveedor (
+        id,
+        nombre
+      )
+`
+    )
     .order("id", { ascending: false });
 
   if (error) throw error;
   return data;
-  
 };
 
 // 🔹 Actualizar producto
@@ -53,7 +60,7 @@ export async function ActualizarProducto(id, p) {
       precio_unitario: p.precio_unitario,
       stock_actual: p.stock_actual,
       stock_minimo: p.stock_minimo,
-      id_categoria: p.id_categoria,
+      id_subcategoria: p.id_subcategoria,
       id_proveedor: p.id_proveedor,
       estado: p.estado,
     })

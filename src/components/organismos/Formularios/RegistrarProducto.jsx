@@ -1,15 +1,23 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { v } from "../../../styles/variables";
 import { InputText } from "./InputText";
 import { Btnsave } from "../../moleculas/Btnsave";
 import { useProductosStore } from "../../../store/ProductosStore";
 import { useForm } from "react-hook-form";
-import { useLibreriaStore } from "../../../store/LibreriaStore";
+import { useCategoriaStore } from "../../../store/CategoriaStore";
+import { useSubCategoriaStore } from "../../../store/SubCategoriaStore";
+import { useProveedorStore } from "../../../store/ProveedorStore";
 
 export function RegistrarProducto({ onClose, dataSelect, accion }) {
   const { insertarProducto, actualizarProducto } = useProductosStore();
-  const { dataempresa } = useLibreriaStore();
+  const { listarCategoria } = useCategoriaStore();
+  const { listarSubCategoria } = useSubCategoriaStore();
+  const { listarProveedor } = useProveedorStore();
+  const [categorias, setCategorias] = useState([]);
+  const [subcategorias, setSubcategorias] = useState([]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+  const [proveedores, setProveedores] = useState([]);
 
   const {
     register,
@@ -19,53 +27,103 @@ export function RegistrarProducto({ onClose, dataSelect, accion }) {
   } = useForm();
 
   useEffect(() => {
-    if (accion === "Editar" && dataSelect) {
+    async function cargarEdicion() {
+      if (accion !== "Editar" || !dataSelect) return;
+
+      // Cargar valores iniciales
       reset({
         nombre: dataSelect.nombre,
         descripcion: dataSelect.descripcion,
         precio_unitario: dataSelect.precio_unitario,
         stock_actual: dataSelect.stock_actual,
         stock_minimo: dataSelect.stock_minimo,
-        id_categoria: dataSelect.id_categoria,
+        id_subcategoria: dataSelect.id_subcategoria,
         id_proveedor: dataSelect.id_proveedor,
         estado: dataSelect.estado,
       });
+
+      // Obtener categoría
+      const categoriaDeSub = categorias.find(
+        (c) => c.id === dataSelect.id_categoria
+      );
+
+      if (categoriaDeSub) {
+        setCategoriaSeleccionada(categoriaDeSub.id);
+
+        // Cargar subcategorías
+        const subs = await listarSubCategoria(categoriaDeSub.id);
+        setSubcategorias(subs);
+      }
     }
-  }, [accion, dataSelect, reset]);
+
+    if (categorias.length > 0 && proveedores.length > 0) {
+      cargarEdicion();
+    }
+  }, [accion, dataSelect, categorias, proveedores]);
+
+  useEffect(() => {
+    async function cargarCategorias() {
+      const cats = await listarCategoria();
+      setCategorias(cats);
+    }
+    cargarCategorias();
+  }, []);
+
+  useEffect(() => {
+    async function cargarProveedores() {
+      const prov = await listarProveedor();
+      setProveedores(prov);
+    }
+    cargarProveedores();
+  }, []);
 
   async function onSubmit(data) {
-  try {
-    if (accion === "Editar") {
-      const productoActualizado = {
-        id: dataSelect.id,
-        nombre: data.nombre,
-        descripcion: data.descripcion,
-        precio_unitario: parseFloat(data.precio_unitario),
-        stock_actual: parseInt(data.stock_actual),
-        stock_minimo: parseInt(data.stock_minimo),
-        id_categoria: parseInt(data.id_categoria),
-        id_proveedor: parseInt(data.id_proveedor),
-        estado: data.estado ?? true,
-      };
-      await actualizarProducto(productoActualizado.id, productoActualizado);
-    } else {
-      const nuevoProducto = {
-        nombre: data.nombre,
-        descripcion: data.descripcion,
-        precio_unitario: parseFloat(data.precio_unitario),
-        stock_actual: parseInt(data.stock_actual),
-        stock_minimo: parseInt(data.stock_minimo),
-        id_categoria: parseInt(data.id_categoria),
-        id_proveedor: parseInt(data.id_proveedor),
-        estado: "activo",
-      };
-      await insertarProducto(nuevoProducto);
+    try {
+      if (accion === "Editar") {
+        const productoActualizado = {
+          id: dataSelect.id,
+          nombre: data.nombre,
+          descripcion: data.descripcion,
+          precio_unitario: parseFloat(data.precio_unitario),
+          stock_actual: parseInt(data.stock_actual),
+          stock_minimo: parseInt(data.stock_minimo),
+          id_subcategoria: parseInt(data.id_subcategoria),
+          id_proveedor: parseInt(data.id_proveedor),
+          estado: data.estado ?? true,
+        };
+        await actualizarProducto(productoActualizado.id, productoActualizado);
+      } else {
+        const nuevoProducto = {
+          nombre: data.nombre,
+          descripcion: data.descripcion,
+          precio_unitario: parseFloat(data.precio_unitario),
+          stock_actual: parseInt(data.stock_actual),
+          stock_minimo: parseInt(data.stock_minimo),
+          id_subcategoria: parseInt(data.id_subcategoria),
+          id_proveedor: parseInt(data.id_proveedor),
+          estado: "activo",
+        };
+        await insertarProducto(nuevoProducto);
+      }
+      onClose();
+    } catch (error) {
+      console.error("❌ Error al insertar o actualizar producto:", error);
     }
-    onClose();
-  } catch (error) {
-    console.error("❌ Error al insertar o actualizar producto:", error);
   }
-}
+
+  async function handleCategoriaChange(e) {
+    const idCat = e.target.value;
+    setCategoriaSeleccionada(idCat);
+
+    const subs = await listarSubCategoria(idCat);
+    setSubcategorias(subs);
+
+    // limpiar subcategoría en el formulario
+    reset((formValues) => ({
+      ...formValues,
+      id_subcategoria: "",
+    }));
+  }
 
   return (
     <Container>
@@ -149,26 +207,55 @@ export function RegistrarProducto({ onClose, dataSelect, accion }) {
 
             {/* Categoría */}
             <InputText icono={<v.iconocategoria />}>
-              <input
+              <select
                 className="form__field"
-                type="number"
-                placeholder=""
-                {...register("id_categoria", { required: true, min: 1 })}
-              />
-              <label className="form__label">ID Categoría</label>
-              {errors.id_categoria && <p>Campo requerido</p>}
+                value={categoriaSeleccionada || ""}
+                onChange={handleCategoriaChange}
+              >
+                <option value="">Seleccione categoría</option>
+                {categorias.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.nombre}
+                  </option>
+                ))}
+              </select>
+              <label className="form__label"></label>
+            </InputText>
+
+            {/* SubCategoría */}
+            <InputText icono={<v.iconocategoria />}>
+              <select
+                className="form__field"
+                {...register("id_subcategoria", { required: true })}
+                disabled={subcategorias.length === 0}
+              >
+                <option value="">Seleccione subcategoría</option>
+                {subcategorias.map((sub) => (
+                  <option key={sub.id} value={sub.id}>
+                    {sub.nombre}
+                  </option>
+                ))}
+              </select>
+              <label className="form__label"></label>
+              {errors.id_subcategoria && <p>Campo requerido</p>}
             </InputText>
 
             {/* Proveedor */}
             <InputText icono={<v.iconoproveedor />}>
-              <input
+              <select
                 className="form__field"
-                type="number"
-                placeholder=""
-                {...register("id_proveedor", { required: true, min: 1 })}
-              />
-              <label className="form__label">ID Proveedor</label>
-              {errors.id_proveedor && <p>Campo requerido</p>}
+                {...register("id_proveedor", { required: true })}
+              >
+                <option value="">Seleccione proveedor</option>
+                {proveedores.map((prov) => (
+                  <option key={prov.id} value={prov.id}>
+                    {prov.nombre}
+                  </option>
+                ))}
+              </select>
+
+              <label className="form__label"></label>
+              {errors.id_proveedor && <p></p>}
             </InputText>
 
             {/* Estado */}
@@ -180,7 +267,7 @@ export function RegistrarProducto({ onClose, dataSelect, accion }) {
                 <option value="activo">Activo</option>
                 <option value="inactivo">Inactivo</option>
               </select>
-              <label className="form__label">Estado</label>
+              <label className="form__label"></label>
               {errors.estado && <p>Campo requerido</p>}
             </InputText>
 
@@ -211,6 +298,19 @@ const Container = styled.div`
   justify-content: center;
   z-index: 1000;
   overflow-y: auto;
+  select.form__field {
+    background-color: ${({ theme }) => theme.bgtotal || "#fff"};
+    color: ${({ theme }) => theme.text || "#000"};
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid ${({ theme }) => theme.border || "#ccc"};
+    cursor: pointer;
+  }
+
+  select.form__field option {
+    background-color: ${({ theme }) => theme.bgtotal || "#fff"};
+    color: ${({ theme }) => theme.text || "#000"};
+  }
 
   .sub-contenedor {
     width: 500px;

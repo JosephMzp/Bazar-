@@ -64,8 +64,11 @@ export function TablaProducto({
     {
       accessorKey: "nombre",
       header: "Nombre",
-      cell: (info) => <td data-title="Nombre" className="ContentCell"
-      ><span>{info.getValue()}</span></td>,
+      cell: (info) => (
+        <td data-title="Nombre" className="ContentCell">
+          <span>{info.getValue()}</span>
+        </td>
+      ),
     },
     {
       accessorKey: "precio_unitario",
@@ -84,7 +87,13 @@ export function TablaProducto({
     },
     {
       header: "Categoría",
-      accessorFn: (row) => row.categoria?.nombre ?? "Sin categoría",
+      accessorFn: (row) =>
+        row.sub_categoria?.categoria?.nombre ?? "Sin categoría",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+    {
+      header: "Subcategoría",
+      accessorFn: (row) => row.sub_categoria?.nombre ?? "Sin subcategoría",
       cell: (info) => <span>{info.getValue()}</span>,
     },
     {
