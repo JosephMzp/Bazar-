@@ -11,10 +11,13 @@ import { MostrarEmpresa } from "../supabase/crudLibreria";
 import { Configuracion } from "../pages/Configuracion";
 import { Productos } from "../pages/Productos";
 import { Reportes } from "../pages/Reportes";
+import { Usuarios } from "../pages/Usuarios";
+import { Empresa } from "../pages/Empresa";
+import { Movimientos } from "../pages/Movimientos";
 
 export function MyRoutes() {
   const { user } = UserAuth();
-  const { MostrarUsuarios, idusuario } = useUsuariosStore();
+  const { mostrarUsuarios, idusuario, mostrarPermisos } = useUsuariosStore();
 
   const {
     data: datausuarios,
@@ -22,13 +25,20 @@ export function MyRoutes() {
     error,
   } = useQuery({
     queryKey: ["mostrar usuarios"],
-    queryFn: () => MostrarUsuarios(),
+    queryFn: () => mostrarUsuarios(),
   });
   const { data: dataempresa } = useQuery({
     queryKey: ["mostrar empresa", datausuarios?.idempresa],
     queryFn: () => MostrarEmpresa({ idempresa: datausuarios?.idempresa }),
     enabled: !!datausuarios?.idempresa,
   });
+
+  const { data: datapermisos } = useQuery({
+    queryKey: ["mostrar permisos", idusuario],
+    queryFn: () => mostrarPermisos(idusuario),
+    enabled: !!datausuarios,
+  });
+
   if (isLoading) {
     return <SpinnerLoader />;
   }
@@ -42,7 +52,10 @@ export function MyRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/reportes" element={<Reportes />} />
         <Route path="/configurar" element={<Configuracion />} />
-        <Route path="/inventario" element={<Productos />} />
+        <Route path="/inventario" element={<Movimientos />} />
+        <Route path="/configurar/usuarios" element={<Usuarios />} />
+        <Route path="/configurar/productos" element={<Productos />} />
+        <Route path="/configurar/empresa" element={<Empresa />} />
       </Route>
     </Routes>
   );

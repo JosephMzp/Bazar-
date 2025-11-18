@@ -10,7 +10,7 @@ import { useCategoriaStore } from "../../../store/CategoriaStore";
 import { useSubCategoriaStore } from "../../../store/SubCategoriaStore";
 import { useProveedorStore } from "../../../store/ProveedorStore";
 
-export function RegistrarProducto({ onClose, dataSelect, accion }) {
+export function RegistrarMovimiento({ onClose, dataSelect, accion }) {
   const { insertarProducto, actualizarProducto } = useProductosStore();
   const { listarCategoria } = useCategoriaStore();
   const { listarSubCategoria } = useSubCategoriaStore();

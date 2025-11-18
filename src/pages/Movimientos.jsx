@@ -1,26 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
-import { useProductosStore } from "../store/ProductosStore";
+import { useMovimientoStore } from "../store/MovimientoStore";
 import { SpinnerLoader } from "../components/moleculas/SpinnerLoader";
 import {useUsuariosStore} from "../store/UsuariosStore"
 import { BloqueoPagina } from "../components/moleculas/BloquePagina";
-import { ProductosTemplate } from "../components/templates/ProductosTemplate";
+import { MovimientosTemplate } from "../components/templates/MovimientosTemplate";
 
-export function Productos() {
+export function Movimientos() {
   const {datapermisos} = useUsuariosStore();
   const statePermisos = datapermisos.some((objeto)=>objeto.modulos.nombre.includes("Productos"))
-  const { listarProductos, buscarProduc, buscador } = useProductosStore();
+  const { listarMovimientos, buscarMovimiento, buscador } = useMovimientoStore();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["mostrar productos"],
-    queryFn: listarProductos,
+    queryKey: ["mostrar movimiento"],
+    queryFn: listarMovimientos,
   });
 
   const {
     data: resultadosBusqueda,
     isFetching: buscando,
   } = useQuery({
-    queryKey: ["buscar producto", buscador],
-    queryFn: () => buscarProduc({ nombre: buscador }),
+    queryKey: ["buscar movimiento", buscador],
+    queryFn: () => buscarMovimiento({ nombre: buscador }),
     enabled: buscador.length > 0,
   });
 
@@ -29,10 +29,10 @@ export function Productos() {
   }
 
   if (isLoading) return <SpinnerLoader />;
-  if (error) return <span>Error cargando productos</span>;
+  if (error) return <span>Error cargando movimientos</span>;
 
-  const productosAMostrar =
+  const movimientosAMostrar =
     buscador.length > 0 ? resultadosBusqueda : data;
 
-  return <ProductosTemplate data={productosAMostrar} />;
+  return <MovimientosTemplate data={movimientosAMostrar} />;
 }

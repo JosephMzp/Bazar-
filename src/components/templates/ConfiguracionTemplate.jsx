@@ -2,6 +2,7 @@ import styled from "styled-components";
 import fondocuadros from "../../assets/fondocuadros.svg";
 import { Link } from "react-router-dom";
 import { DataModulosConfiguracion } from "../../utils/dataEstatica";
+import { Mensaje } from "../moleculas/Mensaje";
 export function ConfiguracionTemplate() {
   return (
     <Container>
@@ -9,10 +10,11 @@ export function ConfiguracionTemplate() {
         {DataModulosConfiguracion.map((item, index) => {
           return (
             <Link
-              to={item.link}
+              to={item.state?item.link:""}
               className={item.state ? "card" : "card false"}
               key={index}
             >
+             <Mensaje state={item.state}/>
               <div class="card-content">
                 <div class="card-image">
                   <img src={item.icono} />
@@ -91,6 +93,8 @@ const Container = styled.div`
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
     cursor: pointer;
+    position: relative;   /* importante para que Mensaje absolute se limite a la card */
+  overflow: hidden;
 
     &:hover {
       transform: translateY(-8px);
