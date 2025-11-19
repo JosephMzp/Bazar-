@@ -14,6 +14,7 @@ import { Reportes } from "../pages/Reportes";
 import { Usuarios } from "../pages/Usuarios";
 import { Empresa } from "../pages/Empresa";
 import { Movimientos } from "../pages/Movimientos";
+import { PerfilPage } from "../pages/PerfilPage";
 
 export function MyRoutes() {
   const { user } = UserAuth();
@@ -56,6 +57,7 @@ export function MyRoutes() {
         <Route path="/configurar/usuarios" element={<Usuarios />} />
         <Route path="/configurar/productos" element={<Productos />} />
         <Route path="/configurar/empresa" element={<Empresa />} />
+        <Route path="/perfil" element={<PerfilPage />} />
       </Route>
     </Routes>
   );

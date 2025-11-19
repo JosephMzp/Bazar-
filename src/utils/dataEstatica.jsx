@@ -9,6 +9,7 @@ export const DesplegableUser = [
     text: "Mi perfil",
     icono: <v.iconoUser/>,
     tipo: "miperfil",
+    to:"/perfil"
   },
   {
     text: "Configuracion",
@@ -90,17 +91,24 @@ export const DataModulosConfiguracion =[
     
   },
   {
-    title:"Categoria de productos",
+    title:"Categorias",
     subtitle:"Asigna categorias a tus productos",
     icono:"https://i.ibb.co/VYbMRLZ/categoria.png",
     link:"/configurar/categorias",
     
   },
   {
-    title:"Compra de productos",
-    subtitle:"gestiona tus compras",
-    icono:"https://i.ibb.co/1qsbCRb/piensa-fuera-de-la-caja.png",
-    link:"/configurar/marca",
+    title:"Sub.Categorias",
+    subtitle:"gestiona las sub-categorias",
+    icono:"https://i.ibb.co/tpnThQHY/clasificacion.png",
+    link:"/configurar/subcategorias",
+   
+  },
+  {
+    title:"Proveedores",
+    subtitle:"gestiona tus proveedores",
+    icono:"https://i.ibb.co/qF2hDPrV/mensajero.png",
+    link:"/configurar/proveedores",
    
   },
 

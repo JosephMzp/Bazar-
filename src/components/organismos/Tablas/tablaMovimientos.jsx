@@ -9,7 +9,7 @@ import {
 import styled from "styled-components";
 import { AccionesTabla } from "../AccionesTabla";
 import Swal from "sweetalert2";
-import { useProductosStore } from "../../../store/ProductosStore";
+import { useMovimientoStore } from "../../../store/MovimientoStore";
 import { v } from "../../../styles/variables";
 import { FaArrowsAltV } from "react-icons/fa";
 import { Paginacion } from "./Paginacion";
@@ -22,7 +22,7 @@ export function TablaMovimientos({
   setAccion,
 }) {
   const [pagina, setPagina] = useState(1);
-  const { eliminarProducto } = useProductosStore();
+  const { eliminarMovimiento } = useMovimientoStore();
   const editar = (data) => {
     if (data.nombre === "Generica") {
       Swal.fire({
@@ -56,19 +56,25 @@ export function TablaMovimientos({
       confirmButtonText: "Si, eliminar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await eliminarProducto(p.id);
+        await eliminarMovimiento(p.id);
       }
     });
   };
   const columns = [
     {
-      accessorKey: "nombre",
-      header: "Nombre",
+      accessorKey: "fecha",
+      header: "Fecha",
       cell: (info) => (
-        <td data-title="Nombre" className="ContentCell">
+        <td data-title="Fecha" className="ContentCell">
           <span>{info.getValue()}</span>
         </td>
       ),
+    },
+    {
+      header: "Usuario",
+      accessorFn: (row) =>
+        row.usuarios?.nombre ?? "Sin categoría",
+      cell: (info) => <span>{info.getValue()}</span>,
     },
     {
       accessorKey: "precio_unitario",
@@ -85,12 +91,7 @@ export function TablaMovimientos({
       header: "Stock Mínimo",
       cell: (info) => <span>{info.getValue() ?? 0}</span>,
     },
-    {
-      header: "Categoría",
-      accessorFn: (row) =>
-        row.sub_categoria?.categoria?.nombre ?? "Sin categoría",
-      cell: (info) => <span>{info.getValue()}</span>,
-    },
+
     {
       header: "Subcategoría",
       accessorFn: (row) => row.sub_categoria?.nombre ?? "Sin subcategoría",
