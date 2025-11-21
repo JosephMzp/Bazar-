@@ -17,7 +17,6 @@ export function Movimientos() {
 
   const {
     data: resultadosBusqueda,
-    isFetching: buscando,
   } = useQuery({
     queryKey: ["buscar movimiento", buscador],
     queryFn: () => buscarMovimiento({ nombre: buscador }),

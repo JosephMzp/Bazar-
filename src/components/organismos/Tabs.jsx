@@ -10,7 +10,7 @@ export function Tabs({data}) {
     setactiveTab(index);
   };
   return (
-    <Container className="container" activeTab={`${activeTab}00%`}>
+    <Container className="container" $activeTab={`${activeTab}00%`}>
       <ul className="tabs">
         <li
           className={activeTab == 0 ? "active" : ""}

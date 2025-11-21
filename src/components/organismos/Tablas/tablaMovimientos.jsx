@@ -14,6 +14,7 @@ import { v } from "../../../styles/variables";
 import { FaArrowsAltV } from "react-icons/fa";
 import { Paginacion } from "./Paginacion";
 import { useState } from "react";
+import { Device } from "../../../styles/breackpoints";
 
 export function TablaMovimientos({
   data,
@@ -62,11 +63,32 @@ export function TablaMovimientos({
   };
   const columns = [
     {
+      header: "Producto",
+      accessorFn: (row) =>
+        row.productos?.nombre ?? "Sin producto",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+    {
       accessorKey: "fecha",
       header: "Fecha",
       cell: (info) => (
         <td data-title="Fecha" className="ContentCell">
           <span>{info.getValue()}</span>
+        </td>
+      ),
+    },
+    {
+      accessorKey: "tipo",
+      header: "Tipo",
+      cell: (info) => (
+        <td data-title="Tipo" className="ContentCell">
+          {
+            info.getValue()=="salida"?(<ColorContent $ancho="70%" $color="#ed4d4d">
+            {info.getValue()}
+            </ColorContent>):(<ColorContent $color="#30c85b">
+            {info.getValue()}
+            </ColorContent>)
+          }
         </td>
       ),
     },
@@ -77,20 +99,11 @@ export function TablaMovimientos({
       cell: (info) => <span>{info.getValue()}</span>,
     },
     {
-      accessorKey: "precio_unitario",
-      header: "Precio (S/)",
+      accessorKey: "detalle",
+      header: "Detalle",
       cell: (info) => <span>{info.getValue() ?? "-"}</span>,
     },
-    {
-      accessorKey: "stock_actual",
-      header: "Stock Actual",
-      cell: (info) => <span>{info.getValue() ?? 0}</span>,
-    },
-    {
-      accessorKey: "stock_minimo",
-      header: "Stock Mínimo",
-      cell: (info) => <span>{info.getValue() ?? 0}</span>,
-    },
+    
 
     {
       header: "Subcategoría",
@@ -310,4 +323,17 @@ const Container = styled.div`
       }
     }
   }
+`;
+
+const ColorContent = styled.div`
+color: ${(props)=>props.$color};
+border-radius: 8px;
+border: 1px dashed ${(props)=>props.$color}
+text-align: center;
+padding: 3px;
+width: 70%;
+font-weight:700;
+@media ${Device.tablet}{
+width: 100%;
+}
 `;

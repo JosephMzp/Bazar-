@@ -21,8 +21,8 @@ export const useMovimientoStore = create((set, get) => ({
   const data = await InsertarMovimiento(p);
 
   // 🚀 Recargar lista completa ya con todas las relaciones
-  const { listarProductos } = get();
-  await listarProductos();
+  const { listarMovimientos } = get();
+  await listarMovimientos();
 
   return data;
 },

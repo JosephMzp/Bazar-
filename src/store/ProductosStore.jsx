@@ -13,7 +13,7 @@ export const useProductosStore = create((set, get) => ({
   setBuscador: (p) => set({ buscador: p }),
 
   productos: [],
-  productoActual: null,
+  productoActual: [],
 
   listarProductos: async () => {
     const data = await MostrarProductos();
@@ -53,8 +53,7 @@ export const useProductosStore = create((set, get) => ({
   },
 
   buscarProduc: async (p) => {
-    const response = await BuscarProducto(p);
-    set({ productos: response });
-    return response;
-  },
+  const response = await BuscarProducto(p);
+  return response; 
+},
 }));

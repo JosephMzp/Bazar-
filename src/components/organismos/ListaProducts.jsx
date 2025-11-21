@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { BtnCerrar } from "../atomos/BtnCerrar";
 import { Device } from "../../styles/breackpoints";
 
-export function ListaGenerica({ data, setState, funcion, scroll, bottom }) {
+export function ListaProducts({ data, setState, funcion, scroll, bottom }) {
   const seleccionar = (p) => {
     funcion(p);
     setState();
@@ -19,7 +19,7 @@ export function ListaGenerica({ data, setState, funcion, scroll, bottom }) {
           return(
           <ItemContainer key={index} onClick={() => seleccionar(item)}>
             <span>-</span>
-            <span>{item.descripcion}</span>
+            <span>{item.nombre}</span>
           </ItemContainer>
           )
         })}
@@ -49,8 +49,8 @@ const Container = styled.div`
   }
 
   .contentItems {
-    flex: 1;          /* 👉 usa el espacio sobrante */
-    overflow-y: auto; /* 👉 activa scroll */
+    flex: 1;          
+    overflow-y: auto; 
   }
 `;
 

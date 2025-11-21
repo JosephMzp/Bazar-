@@ -18,16 +18,21 @@ export function MovimientosTemplate({ data }) {
   const [dataSelect, setdataSelect] = useState([]);
   const [accion, setAccion] = useState("");
   const [openRegistro, setopenRegistro] = useState(false);
-  const nuevoRegistro = () =>{
-    setopenRegistro(!openRegistro);
-    setAccion("Nuevo")
-    setdataSelect([])
+  const [tipo, setTipo] = useState("");
+  const nuevaEntrada = () =>{
+    setopenRegistro(true);
+    setTipo("entrada")
+  }
+  const nuevaSalida = () =>{
+    setopenRegistro(true);
+    setTipo("salida")
   }
   const {setBuscador} = useProductosStore();
   return (
     <Container>
       {openRegistro && 
         <RegistrarMovimiento
+        tipo={tipo}
           dataSelect={dataSelect}
           accion={accion}
           onClose={() => setopenRegistro(!openRegistro)}
@@ -42,8 +47,8 @@ export function MovimientosTemplate({ data }) {
       <section className="area1">
       <ContentFiltro>
         <Title>Movimientos</Title>
-      <Btnsave bgcolor="#52de65" titulo="Entrada"/>
-      <Btnsave bgcolor="#fb6661" titulo="Salida"/>
+      <Btnsave bgcolor="#52de65" titulo="Entrada" funcion={nuevaEntrada}/>
+      <Btnsave bgcolor="#fb6661" titulo="Salida" funcion={nuevaSalida}/>
       </ContentFiltro>
       </section>
       <section className="area2">
